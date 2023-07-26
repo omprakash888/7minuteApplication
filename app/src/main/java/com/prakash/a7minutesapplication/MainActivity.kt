@@ -1,5 +1,6 @@
 package com.prakash.a7minutesapplication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -15,8 +16,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
 
         binding?.start?.setOnClickListener {
-            Toast.makeText(this@MainActivity,
-                "Here we go", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, ExerciseActivity::class.java)
+            startActivity(intent)
         }
     }
 
