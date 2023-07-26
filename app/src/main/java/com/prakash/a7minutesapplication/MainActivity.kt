@@ -2,7 +2,6 @@ package com.prakash.a7minutesapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.FrameLayout
 import android.widget.Toast
 import com.prakash.a7minutesapplication.databinding.ActivityMainBinding
 
