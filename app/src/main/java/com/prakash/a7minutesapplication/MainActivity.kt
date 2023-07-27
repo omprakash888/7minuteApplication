@@ -1,7 +1,9 @@
 package com.prakash.a7minutesapplication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.widget.Toast
 import com.prakash.a7minutesapplication.databinding.ActivityMainBinding
 
@@ -9,14 +11,18 @@ class MainActivity : AppCompatActivity() {
 
     private var binding : ActivityMainBinding? = null
 
+
+    private var countDownTimer : CountDownTimer? = null
+    private var timerDuration : Long = 60000
+    private var pauseOffset : Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
         binding?.start?.setOnClickListener {
-            Toast.makeText(this@MainActivity,
-                "Here we go", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, ExerciseActivity::class.java)
+            startActivity(intent)
         }
     }
 
