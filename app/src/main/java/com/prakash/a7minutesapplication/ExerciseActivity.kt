@@ -1,7 +1,8 @@
 package com.prakash.a7minutesapplication
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +11,14 @@ import android.os.CountDownTimer
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.prakash.a7minutesapplication.databinding.ActivityExerciseBinding
+import com.prakash.a7minutesapplication.databinding.DialogCustomBackButtonBinding
 import java.lang.Exception
 import java.util.Locale
 
@@ -31,6 +38,9 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var exerciseList : ArrayList<ExerciseModel>? = null
     private var currentExercisePosition = -1
 
+    private var exerciseStatusAdapter : ExerciseStatusAdapter? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityExerciseBinding.inflate(layoutInflater)
@@ -45,11 +55,43 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         textToSpeech = TextToSpeech(this, this)
         binding?.toolbarExercise?.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            customDialogForBackButton()
+        }
+        setUpRestView()
+        setUpExerciseStatusRecyclerView()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        customDialogForBackButton()
+    }
+
+    private fun customDialogForBackButton() {
+        val customDialog = Dialog(this)
+        val dialogBinding = DialogCustomBackButtonBinding.inflate(layoutInflater)
+        customDialog.setContentView(dialogBinding.root)
+
+        customDialog.setCanceledOnTouchOutside(false)
+
+        dialogBinding.yesButton.setOnClickListener {
+            this@ExerciseActivity.finish()
+            customDialog.dismiss()
         }
 
+        dialogBinding.noButton.setOnClickListener {
+            customDialog.dismiss()
+        }
+        customDialog.show()
+    }
 
-        setUpRestView()
+    private fun setUpExerciseStatusRecyclerView() {
+        binding?.rvExerciseStatus?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        //GridLayoutManager(this,3, RecyclerView.VERTICAL,false)
+
+        exerciseStatusAdapter = ExerciseStatusAdapter(exerciseList!!)
+        binding?.rvExerciseStatus?.adapter = exerciseStatusAdapter
+
     }
 
     private fun setUpRestView() {
@@ -106,15 +148,18 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun setRestProgressBar() {
         binding?.progressBar?.progress = restProgress
 
-        restTimer = object : CountDownTimer(5000, 1000) {
+        restTimer = object : CountDownTimer(2000, 1000) {
             override fun onTick(p0: Long) {
                 restProgress++
                 binding?.progressBar?.progress = 10 - restProgress
                 binding?.tvTimer?.text = (10 - restProgress).toString()
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun onFinish() {
                 currentExercisePosition++
+                exerciseList!![currentExercisePosition].setIsSelected(true)
+                exerciseStatusAdapter!!.notifyDataSetChanged()
                 setUpExerciseView()
             }
 
@@ -131,12 +176,16 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 binding?.tvTimerExercise?.text = (30 - exerciseProgress).toString()
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun onFinish() {
+                exerciseList!![currentExercisePosition].setIsSelected(false)
+                exerciseList!![currentExercisePosition].setIsCompleted(true)
+                exerciseStatusAdapter!!.notifyDataSetChanged()
                 if(currentExercisePosition < exerciseList!!.size - 1) {
                     setUpRestView()
                 }else {
-                    Toast.makeText(this@ExerciseActivity, "Congrats you have done", Toast.LENGTH_LONG).show()
-                    startActivity(Intent(applicationContext, MainActivity::class.java))
+                    finish()
+                    startActivity(Intent(this@ExerciseActivity, FinishActivity::class.java))
                 }
             }
 
@@ -159,6 +208,10 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         if(textToSpeech != null) {
             textToSpeech!!.stop()
             textToSpeech!!.shutdown()
+        }
+
+        if(player != null) {
+            player!!.stop()
         }
         binding = null
     }

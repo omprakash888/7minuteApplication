@@ -12,7 +12,6 @@
         android:id="@+id/myImageView"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:layout_marginTop="150dp"
         android:src="@drawable/img_main_page"
         android:contentDescription="@string/start_image"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,7 +22,8 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/myImageView"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/myImageView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/item_color_accent_border_ripple_background"
@@ -39,6 +39,42 @@
             android:textStyle="bold"
             />
     </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/flBmi"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/item_circular_accent_background"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bmi"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/default_button_text_size"
+            android:textStyle="bold"
+            />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/calculator"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/default_button_text_size"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flBmi"
+        />
 
 
 
